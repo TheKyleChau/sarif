@@ -22,13 +22,15 @@ npm run dev
 
 Open [localhost:5173](http://localhost:5173). Append `?demo` to the URL to try it with sample data.
 
+Don't have Git? Click the green **Code** button on the repo page, hit **Download ZIP**, unzip it, and run the same commands starting from `cd sarif/app`.
+
 ## API keys (optional)
 
 Works without any API keys. Award search and live prices turn on once you add them.
 
 | Key | What it powers | Where to get it | Cost |
 |-----|---------------|-----------------|------|
-| `SEATS_API_KEY` | Award search | [seats.aero](https://seats.aero) | ~$20/mo |
+| `SEATS_API_KEY` | Award search | [seats.aero](https://seats.aero) | $9.99/mo |
 | `RAPIDAPI_KEY` | Business/PE cash prices | [Sky Scrapper on RapidAPI](https://rapidapi.com/apiheya/api/sky-scrapper) | Free (100 req/mo) or $8.99/mo (10k req) |
 | `TRAVELPAYOUTS_TOKEN` | Economy cash baseline | [travelpayouts.com](https://www.travelpayouts.com/developers/api) | Free |
 

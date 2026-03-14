@@ -11,3 +11,6 @@ YLDWGD.pdf
 
 # But allow committed screenshots in screenshots/
 !screenshots/
+
+# Marketing / twitter assets
+twitter/
