@@ -90,7 +90,7 @@ export default function SetupModal({ onComplete, isSampleData }) {
               {[
                 { val: 'us',      label: '🇺🇸 US citizen',      sub: '' },
                 { val: 'eu',      label: '🇪🇺 EU / Schengen',    sub: '' },
-                { val: 'both',    label: '🌐 Both',              sub: 'All trackers active' },
+                { val: 'both',    label: '🌐 Both',              sub: 'No entry limits' },
                 { val: 'neither', label: '🛂 Neither',           sub: 'All limits apply' },
               ].map(({ val, label, sub }) => (
                 <button

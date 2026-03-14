@@ -18,6 +18,7 @@ import SchengenTracker from './components/SchengenTracker';
 import AwardSearch from './components/AwardSearch';
 import TripPlanner from './components/TripPlanner';
 import SetupModal from './components/SetupModal';
+import OnboardingBanner from './components/OnboardingBanner';
 import { Plane, BarChart2, CreditCard, Globe, Search, ChevronRight, Settings } from 'lucide-react';
 
 const TABS = [
@@ -27,6 +28,14 @@ const TABS = [
   { id: 'schengen',  label: 'Schengen',         icon: Globe      },
   { id: 'points',    label: 'Points',            icon: CreditCard },
 ];
+
+// Tabs to hide per citizenship value
+const HIDDEN_TABS = {
+  us:      ['trips'],                // US citizens have no US stay limits
+  eu:      ['schengen'],             // EU citizens have no Schengen limits
+  both:    ['trips', 'schengen'],    // Citizen of both — no limits at all
+  neither: [],                       // All limits apply
+};
 
 function loadState(key, fallback) {
   try {
@@ -45,6 +54,17 @@ export default function App() {
   const [citizenship,      setCitizenship]      = useState(() => DEMO_MODE ? 'neither' : (localStorage.getItem('sarif_citizenship') || 'neither'));
   const [setupDone,        setSetupDone]        = useState(() => DEMO_MODE ? false : !!localStorage.getItem('sarif_setup_done'));
   const [showSetup,        setShowSetup]        = useState(false);
+  const [onboardingDismissed, setOnboardingDismissed] = useState(() => DEMO_MODE || !!localStorage.getItem('sarif_onboarding_dismissed'));
+
+  const hiddenTabIds = HIDDEN_TABS[citizenship] || [];
+  const visibleTabs = TABS.filter(t => !hiddenTabIds.includes(t.id));
+  const showUsTracking = !hiddenTabIds.includes('trips');
+  const showSchengen   = !hiddenTabIds.includes('schengen');
+
+  // Redirect to overview if current tab is hidden after citizenship change
+  useEffect(() => {
+    if (hiddenTabIds.includes(activeTab)) setActiveTab('overview');
+  }, [citizenship]);
 
   useEffect(() => { if (!DEMO_MODE) localStorage.setItem('usTrips',          JSON.stringify(usTrips));          }, [usTrips]);
   useEffect(() => { if (!DEMO_MODE) localStorage.setItem('schengenTrips',    JSON.stringify(schengenTrips));    }, [schengenTrips]);
@@ -89,6 +109,10 @@ export default function App() {
     localStorage.setItem('sarif_setup_done', '1');
     setSetupDone(true);
     setShowSetup(false);
+    // Show onboarding banner after first setup (not after re-opening settings)
+    if (!localStorage.getItem('sarif_onboarding_dismissed')) {
+      setOnboardingDismissed(false);
+    }
   }
 
   const isSampleData = usTrips === US_TRIPS ||
@@ -160,7 +184,7 @@ export default function App() {
       {/* Tabs */}
       <div className="border-b border-white/5 px-6">
         <div className="max-w-7xl mx-auto flex gap-1">
-          {TABS.map(tab => {
+          {visibleTabs.map(tab => {
             const Icon = tab.icon;
             return (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
@@ -180,12 +204,26 @@ export default function App() {
       {/* Content */}
       <div className="max-w-7xl mx-auto px-6 py-6">
 
+        {/* Onboarding banner */}
+        {setupDone && !onboardingDismissed && !DEMO_MODE && (
+          <div className="mb-5">
+            <OnboardingBanner
+              citizenship={citizenship}
+              onNavigate={setActiveTab}
+              onDismiss={() => {
+                setOnboardingDismissed(true);
+                localStorage.setItem('sarif_onboarding_dismissed', '1');
+              }}
+            />
+          </div>
+        )}
+
         {activeTab === 'overview' && (
           <div className="space-y-5">
-            <StatusBar trips={usTrips} />
+            {showUsTracking && <StatusBar trips={usTrips} />}
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-              <YearlyChart trips={usTrips} />
-              <SchengenTracker trips={schengenTrips} onAdd={addSchengenTrip} citizenship={citizenship} />
+              {showUsTracking && <YearlyChart trips={usTrips} />}
+              {showSchengen && <SchengenTracker trips={schengenTrips} onAdd={addSchengenTrip} citizenship={citizenship} />}
             </div>
             <TripPlanner usTrips={usTrips} schengenTrips={schengenTrips} citizenship={citizenship} />
             {/* Compact points summary */}
