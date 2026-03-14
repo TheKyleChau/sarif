@@ -1,9 +1,15 @@
 import { useState, useEffect } from 'react';
-import * as realData from './data/travelHistory';
 import * as exampleData from './data/travelHistory.example';
 
+// Optional user data file — if it doesn't exist, start empty.
+// travelHistory.js is gitignored and never required; users manage data through the app UI.
+const userDataModules = import.meta.glob('./data/travelHistory.js', { eager: true });
+const userData = userDataModules['./data/travelHistory.js'] || null;
+
+const EMPTY_DATA = { US_TRIPS: [], SCHENGEN_TRIPS: [], POINTS: [], DEFAULT_USER_DESTINATIONS: [], DESTINATIONS: {} };
 const DEMO_MODE = new URLSearchParams(window.location.search).has('demo');
-const { US_TRIPS, SCHENGEN_TRIPS, POINTS, DEFAULT_USER_DESTINATIONS, DESTINATIONS } = DEMO_MODE ? exampleData : realData;
+const { US_TRIPS, SCHENGEN_TRIPS, POINTS, DEFAULT_USER_DESTINATIONS, DESTINATIONS } =
+  DEMO_MODE ? exampleData : (userData || EMPTY_DATA);
 import StatusBar from './components/StatusBar';
 import YearlyChart from './components/YearlyChart';
 import TripHistory from './components/TripHistory';

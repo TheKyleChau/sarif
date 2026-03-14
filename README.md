@@ -15,12 +15,11 @@
 git clone https://github.com/jcdentonintheflesh/sarif.git
 cd sarif/app
 npm install
-cp src/data/travelHistory.example.js src/data/travelHistory.js
 cp .env.example .env
 npm run dev
 ```
 
-Open [localhost:5173](http://localhost:5173). Append `?demo` to the URL to try it with sample data.
+Open [localhost:5173](http://localhost:5173). The app will walk you through setup — add your trips, points, and home airport from the UI. Append `?demo` to the URL to explore with sample data first.
 
 Don't have Git? Click the green **Code** button on the repo page, hit **Download ZIP**, unzip it, and run the same commands starting from `cd sarif/app`.
 
@@ -56,12 +55,12 @@ No accounts, no cloud, no tracking. Data stays on your machine.
 
 ## Data setup
 
-Edit `src/data/travelHistory.js` with your trips, points, and programs:
-- US entry/exit dates (get yours from [i94.cbp.dhs.gov](https://i94.cbp.dhs.gov))
-- Schengen stays
-- Points balances and loyalty programs
+Add your data directly in the app:
+- **US trips** — get your entry/exit dates from [i94.cbp.dhs.gov](https://i94.cbp.dhs.gov), then add them in the Trip History tab
+- **Schengen stays** — add in the Schengen tab
+- **Points balances** — edit inline in the Points tab
 
-This file is gitignored and never gets committed. See `travelHistory.example.js` for the full schema.
+All data is stored in your browser's localStorage and never leaves your machine.
 
 ## Stack
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TRANSFER_PARTNERS } from '../data/travelHistory';
+import { TRANSFER_PARTNERS } from '../data/transferPartners';
 import { Edit2, Check, ExternalLink, X, Plus, ArrowRight } from 'lucide-react';
 
 const PALETTE = ['#60a5fa','#34d399','#a78bfa','#f472b6','#fb923c','#facc15','#38bdf8','#4ade80','#f87171','#c084fc'];
