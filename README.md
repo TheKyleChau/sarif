@@ -22,6 +22,22 @@ npm run dev
 
 Open [localhost:5173](http://localhost:5173). Append `?demo` to the URL to try it with sample data.
 
+## API keys (optional)
+
+Works without any API keys. Award search and live prices turn on once you add them.
+
+| Key | What it powers | Where to get it | Cost |
+|-----|---------------|-----------------|------|
+| `SEATS_API_KEY` | Award search | [seats.aero](https://seats.aero) | ~$20/mo |
+| `RAPIDAPI_KEY` | Business/PE cash prices | [Sky Scrapper on RapidAPI](https://rapidapi.com/apiheya/api/sky-scrapper) | Free (100 req/mo) or $8.99/mo (10k req) |
+| `TRAVELPAYOUTS_TOKEN` | Economy cash baseline | [travelpayouts.com](https://www.travelpayouts.com/developers/api) | Free |
+
+Add keys to `.env`, then start the backend:
+
+```bash
+npm run dev:all    # frontend + backend
+```
+
 ## Overview
 
 ![Sarif dashboard](screenshots/sarif-overview.png)
@@ -39,22 +55,6 @@ Open [localhost:5173](http://localhost:5173). Append `?demo` to the URL to try i
 ![Award Search](screenshots/sarif-search.png)
 
 No accounts, no cloud, no tracking. Data stays on your machine.
-
-## API keys (optional)
-
-Works without any API keys. Award search and live prices turn on once you add them.
-
-| Key | What it powers | Where to get it | Cost |
-|-----|---------------|-----------------|------|
-| `SEATS_API_KEY` | Award search | [seats.aero](https://seats.aero) | ~$20/mo |
-| `RAPIDAPI_KEY` | Business/PE cash prices | [Sky Scrapper on RapidAPI](https://rapidapi.com/apiheya/api/sky-scrapper) | Free (100 req/mo) or $8.99/mo (10k req) |
-| `TRAVELPAYOUTS_TOKEN` | Economy cash baseline | [travelpayouts.com](https://www.travelpayouts.com/developers/api) | Free |
-
-Add keys to `.env`, then start the backend:
-
-```bash
-npm run dev:all    # frontend + backend
-```
 
 ## Data setup
 
