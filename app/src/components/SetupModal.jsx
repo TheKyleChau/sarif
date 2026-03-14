@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Plane, X } from 'lucide-react';
 
-export default function SetupModal({ onComplete, isSampleData }) {
+export default function SetupModal({ onComplete, isSampleData, hasFileData }) {
   const [airport, setAirport]       = useState('');
   const [clearData, setClearData]   = useState(true);
   const [citizenship, setCitizenship] = useState('neither');
@@ -153,6 +153,18 @@ export default function SetupModal({ onComplete, isSampleData }) {
                 </label>
               </div>
             </div>
+          )}
+
+          {/* Restore from file */}
+          {hasFileData && (
+            <button
+              type="button"
+              onClick={() => onComplete({ homeAirport: null, clearData: false, citizenship, restoreData: true })}
+              className="w-full rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-2.5 text-left transition-colors hover:bg-emerald-500/15"
+            >
+              <span className="text-xs font-semibold text-emerald-400">Restore trip data from file</span>
+              <p className="text-xs text-emerald-300/60 mt-0.5">Re-import trips from your travelHistory.js data file</p>
+            </button>
           )}
 
           {/* Actions */}

@@ -66,8 +66,10 @@ export default function App() {
     if (hiddenTabIds.includes(activeTab)) setActiveTab('overview');
   }, [citizenship]);
 
-  useEffect(() => { if (!DEMO_MODE) localStorage.setItem('usTrips',          JSON.stringify(usTrips));          }, [usTrips]);
-  useEffect(() => { if (!DEMO_MODE) localStorage.setItem('schengenTrips',    JSON.stringify(schengenTrips));    }, [schengenTrips]);
+  // Persist trips to localStorage — but if the array is empty and a data file
+  // exists, remove the key so the file seed is used on next reload.
+  useEffect(() => { if (!DEMO_MODE) { if (usTrips.length || !userData) localStorage.setItem('usTrips', JSON.stringify(usTrips)); else localStorage.removeItem('usTrips'); } }, [usTrips]);
+  useEffect(() => { if (!DEMO_MODE) { if (schengenTrips.length || !userData) localStorage.setItem('schengenTrips', JSON.stringify(schengenTrips)); else localStorage.removeItem('schengenTrips'); } }, [schengenTrips]);
   useEffect(() => { if (!DEMO_MODE) localStorage.setItem('points',           JSON.stringify(points));           }, [points]);
   useEffect(() => { if (!DEMO_MODE) localStorage.setItem('userDestinations', JSON.stringify(userDestinations)); }, [userDestinations]);
 
@@ -83,7 +85,7 @@ export default function App() {
   function addPoint(program)          { setPoints(p => [...p, program]); }
   function removePoint(i)             { setPoints(p => p.filter((_, idx) => idx !== i)); }
 
-  function handleSetupComplete({ homeAirport: ap, clearData, citizenship: ct }) {
+  function handleSetupComplete({ homeAirport: ap, clearData, citizenship: ct, restoreData }) {
     if (ct) {
       setCitizenship(ct);
       localStorage.setItem('sarif_citizenship', ct);
@@ -103,8 +105,10 @@ export default function App() {
     if (clearData) {
       setUsTrips([]);
       setSchengenTrips([]);
-      localStorage.setItem('usTrips', JSON.stringify([]));
-      localStorage.setItem('schengenTrips', JSON.stringify([]));
+    }
+    if (restoreData && userData) {
+      setUsTrips(userData.US_TRIPS || []);
+      setSchengenTrips(userData.SCHENGEN_TRIPS || []);
     }
     localStorage.setItem('sarif_setup_done', '1');
     setSetupDone(true);
@@ -125,6 +129,7 @@ export default function App() {
       {(!setupDone || showSetup) && (
         <SetupModal
           isSampleData={isSampleData}
+          hasFileData={!!userData}
           onComplete={handleSetupComplete}
         />
       )}
