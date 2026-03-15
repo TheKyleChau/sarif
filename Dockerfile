@@ -5,7 +5,7 @@
 # Only port 5173 is exposed; the API server is never reachable from the host.
 # ─────────────────────────────────────────────────────────────────────────────
 
-FROM node:22-alpine
+FROM node:24-alpine
 
 # Non-root user — drop privileges before running the app
 RUN addgroup -S sarif && adduser -S sarif -G sarif
