@@ -1,0 +1,26 @@
+# Dependencies — reinstalled inside the image
+app/node_modules
+
+# Build output — rebuilt inside the image
+app/dist
+
+# Secrets — never bake into the image; pass via docker-compose env
+app/.env
+app/.env.local
+app/.env.*.local
+
+# Personal travel data — gitignored and must never enter the image
+app/src/data/travelHistory.js
+
+# VCS / OS noise
+.git
+.gitignore
+**/.DS_Store
+
+# Docs / screenshots not needed at runtime
+README.md
+screenshots/
+*.md
+*.png
+*.jpg
+*.jpeg
