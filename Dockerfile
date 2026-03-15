@@ -35,4 +35,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
 
 # Plain shell — no concurrently, no `ps` required.
 # If vite exits, the script exits and Docker restarts the container.
-CMD ["sh", "-c", "node server/index.js & vite --host 0.0.0.0"]
+CMD ["sh", "-c", "node server/index.js & npx vite --host 0.0.0.0"]
