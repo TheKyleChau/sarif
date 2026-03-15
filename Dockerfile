@@ -7,12 +7,8 @@
 
 FROM node:24-slim
 
-# procps provides `ps`, required by concurrently --kill-others to find child PIDs
-RUN apt-get update && apt-get install -y --no-install-recommends procps \
-    && rm -rf /var/lib/apt/lists/*
-
 # Non-root user — drop privileges before running the app
-RUN groupadd -r sarif && useradd -r -g sarif sarif
+RUN groupadd -r sarif && useradd -r -g sarif -m sarif
 
 WORKDIR /app
 
@@ -20,13 +16,11 @@ WORKDIR /app
 COPY app/package*.json ./
 
 # Install all dependencies (dev deps needed for Vite).
-# NODE_OPTIONS caps the heap to avoid OOM kills on low-memory VPS/servers.
-# --no-audit --no-fund skips network round-trips that waste RAM during build.
-RUN NODE_OPTIONS="--max-old-space-size=512" npm ci --no-audit --no-fund \
-    && npm cache clean --force
+# --no-audit --no-fund skips network round-trips during build.
+RUN npm ci --no-audit --no-fund && npm cache clean --force
 
-# Copy application source and fix ownership so the sarif user can write
-# temp files that Vite needs when bundling vite.config.js at startup
+# Copy application source and hand ownership to sarif so Vite can write
+# its config timestamp file (.vite.config.js.timestamp-*.mjs) at startup
 COPY app/ .
 RUN chown -R sarif:sarif /app
 
@@ -39,9 +33,6 @@ EXPOSE 5173
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
   CMD node -e "require('http').get('http://localhost:5173',r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))"
 
-# concurrently is already a project dependency — use it so either process
-# dying kills the other (--kill-others), preventing a zombie half-stack.
-# vite --host binds to 0.0.0.0 inside the container so the mapped port is reachable.
-CMD ["npx", "concurrently", "--kill-others", "--names", "api,vite", \
-     "node server/index.js", \
-     "vite --host 0.0.0.0"]
+# Plain shell — no concurrently, no `ps` required.
+# If vite exits, the script exits and Docker restarts the container.
+CMD ["sh", "-c", "node server/index.js & vite --host 0.0.0.0"]
